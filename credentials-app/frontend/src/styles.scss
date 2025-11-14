@@ -1,0 +1,97 @@
+/* Global page background */
+body {
+  background: #f5f7fa;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Default container styling */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Headings */
+.container h1,
+.container h2,
+.container h3 {
+  margin-top: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Default list styling for items like org list */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list-item {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 14px 18px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.list-item:hover {
+  background: #eef2ff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Global button styles */
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Primary button */
+.btn-primary {
+  background: #4f46e5;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4338ca;
+}
+
+/* Disabled */
+.btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.cred-info {
+  flex: 1;
+}
+
+.edit-box {
+  margin-top: 12px;
+}
+
+.edit-box input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.actions,
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

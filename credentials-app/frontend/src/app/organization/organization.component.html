@@ -1,0 +1,46 @@
+<div class="container">
+    <div *ngIf="!userExists">
+        <h2>Select Organizations for {{ userInfo?.firstName }} {{ userInfo?.lastName }}</h2>
+
+        <ul>
+            <li *ngFor="let org of availableOrgs">
+                <p> {{org.name}}</p>
+                <label>
+                    <input type="checkbox" [checked]="selectedOrgs.includes(org.name)"
+                        (change)="toggleSelection(org)" />
+                    {{ org.name }}
+                </label>
+
+            </li>
+        </ul>
+        <label>First Name <input type="text" [(ngModel)]="firstName" name="firstName"></label>
+        <label>Last Name <input type="text" [(ngModel)]="lastName" name="lastName"></label>
+        <button (click)="saveSelections()" [disabled]="selectedOrgs.length === 0">
+            Save Selections
+        </button>
+    </div>
+    <div *ngIf="userExists">
+  <ul>
+    <li *ngFor="let org of userOrgs">
+      <label>
+        <input
+          type="radio"
+          name="selectedOrg"
+          [value]="org"
+          [checked]="selectedOrg?.orgId === org.orgId"
+          (change)="selectOrg(org)"
+        />
+        {{ org.name }}
+      </label>
+
+      <button
+        (click)="goToCredential()"
+        [disabled]="!selectedOrg"
+      >
+        Go to create or change credential
+      </button>
+    </li>
+  </ul>
+</div>
+
+</div>

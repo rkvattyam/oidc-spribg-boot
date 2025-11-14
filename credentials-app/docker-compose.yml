@@ -1,0 +1,56 @@
+services:
+  frontend:
+    build: ./frontend                # Path to your Angular + Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:80"                    # Angular served via Nginx
+    depends_on:
+      - backend
+    networks:
+      - demo-net
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - oidc
+      - db
+    expose:
+      - "8080"
+    networks:
+      - demo-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/userdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+  oidc:
+    build: ./mock-oidc
+    container_name: mock-oidc
+    ports:
+      - "9000:9000"
+    networks:
+      - demo-net
+
+  db:
+    image: postgres
+    container_name: user-credentials-postgres
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - demo-net
+
+networks:
+  demo-net:
+    driver: bridge
+
+volumes:
+  pgdata:
