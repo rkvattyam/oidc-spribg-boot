@@ -24,17 +24,6 @@ export class AuthService {
   }});
   }
 
-  async configure() {
-    this.oauthService.configure(authConfig);
-    this.oauthService.tokenValidationHandler = new NullValidationHandler(); // fine for mock
-    await this.oauthService.loadDiscoveryDocumentAndTryLogin();
-  }
-
-
-
-  login() { this.oauthService.initCodeFlow();
-    console.log('Login initiated, code_verifier stored:', 
-      sessionStorage.getItem('pkce_verifier')); }
 
   async loginCallback(): Promise<boolean> {
     const code = new URL(window.location.href).searchParams.get('code');
@@ -44,14 +33,9 @@ export class AuthService {
     }
 
     try {
-      // Load discovery document
+    
       await this.oauthService.loadDiscoveryDocument();
-      console.log('Discovery document loaded');
-
-      // Exchange code for tokens
-      console.log('code_verifier:', sessionStorage.getItem('code_verifier'));
       await this.oauthService.tryLoginCodeFlow();
-      console.log('tryLoginCodeFlow completed');
 
       // Check token existence
       const accessToken = this.oauthService.getAccessToken();
@@ -74,7 +58,7 @@ export class AuthService {
     await new Promise(res => setTimeout(res, 500));
     await this.oauthService.tryLoginCodeFlow();
   }
-console.log("access token"+ this.accessToken);
+
   return !!this.accessToken;
 }
 

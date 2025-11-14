@@ -12,7 +12,6 @@ export class OrgService {
   constructor(private http: HttpClient) {}
 
    checkUserExistence(email: string) {
-    console.log('in checkUserExistence, ${sub}'+ email);
     return this.http.get<any>(`${environment.apiBaseUrl}/organizations/user/${email}`).toPromise();
   }
 

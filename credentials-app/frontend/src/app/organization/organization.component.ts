@@ -29,7 +29,7 @@ selectedOrg: any = null;
   }
 
   ngOnInit(): void {
-    console.log("userInfo" + JSON.stringify(this.userInfo));
+    
     if(this.userInfo?.userId){
       this.userExists = true;
       this.userOrgs = this.userInfo.organizations;
@@ -49,7 +49,7 @@ toggleSelection(org: any) {
 
   async saveSelections() {
     const userDetails = this.authService.identityClaims;
-    console.log(this.firstName)
+    
     const payload = {
       email: userDetails['sub'],
       firstName: this.firstName,
@@ -62,7 +62,7 @@ toggleSelection(org: any) {
 
     try {
       const response = await this.orgService.saveSelectedOrganizations(payload);
-      console.log('Organizations saved successfully!');
+    
       this.router.navigate(['/credentials'],  { state: {
           organisation: response,
           userInfo: this.userInfo,

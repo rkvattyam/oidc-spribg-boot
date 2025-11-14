@@ -75,7 +75,6 @@ export class CredentialsComponent implements OnInit {
  edit(c: any) {
   
     this.editId = c.clientId;
-
     this.cd.detectChanges();
     this.updatedSecret = ''; 
   }
