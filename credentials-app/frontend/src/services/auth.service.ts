@@ -1,74 +1,79 @@
 import { Injectable } from '@angular/core';
-import { OAuthService, AuthConfig, NullValidationHandler } from 'angular-oauth2-oidc';
 import { environment } from '../environments/environment';
 
-const authConfig: AuthConfig = {
-  issuer: environment.oidc.issuer,
-  redirectUri: environment.oidc.redirectUri,
-  clientId: environment.oidc.clientId,
-  responseType: 'code',
-  scope: environment.oidc.scope,
-  showDebugInformation: true,
-  strictDiscoveryDocumentValidation: false,
-  disablePKCE: false
-};
+// const authConfig: AuthConfig = {
+//   issuer: environment.oidc.issuer,
+//   redirectUri: environment.oidc.redirectUri,
+//   clientId: environment.oidc.clientId,
+//   responseType: 'code',
+//   scope: environment.oidc.scope,
+//   showDebugInformation: true,
+//   strictDiscoveryDocumentValidation: false,
+//   disablePKCE: false
+// };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private oauthService: OAuthService) {
-    //this.configure();
-    this.oauthService.configure(authConfig);
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
-  if (!oauthService.hasValidAccessToken()) {
-    oauthService.initCodeFlow(); // triggers login
-  }});
-  }
+//   constructor(private oauthService: OAuthService, private oidcSecurityService: OidcSecurityService) {
+//   //   this.oauthService.configure(authConfig);
+//   //   this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+//   // if (!oauthService.hasValidAccessToken()) {
+//   //   oauthService.initCodeFlow();
+//   // }});
+//   }
 
 
-  async loginCallback(): Promise<boolean> {
-    const code = new URL(window.location.href).searchParams.get('code');
-    if (!code) {
-      console.error('No authorization code in URL');
-      return false;
-    }
+//   async loginCallback(): Promise<boolean> {
+//     const code = new URL(window.location.href).searchParams.get('code');
+//     if (!code) {
+//       console.error('No authorization code in URL');
+//       return false;
+//     }
 
-    try {
+//     try {
     
-      await this.oauthService.loadDiscoveryDocument();
-      await this.oauthService.tryLoginCodeFlow();
+//       await this.oauthService.loadDiscoveryDocument();
+//       await this.oauthService.tryLoginCodeFlow();
 
-      // Check token existence
-      const accessToken = this.oauthService.getAccessToken();
-      return !!accessToken;
-    } catch (err) {
-      console.error('Login callback failed', err);
-      return false;
-    }
-  }
+//       // Check token existence
+//       const accessToken = this.oauthService.getAccessToken();
+//       return !!accessToken;
+//     } catch (err) {
+//       console.error('Login callback failed', err);
+//       return false;
+//     }
+//   }
 
-  async loginTest(): Promise<void> {
-    await this.oauthService.loadDiscoveryDocumentAndTryLogin();
-  }
+//    login() {
+//     this.oidcSecurityService.authorize();   // <-- MUST redirect to Keycloak login page
+//   }
+//    checkauth() {
+//     this.oidcSecurityService.checkAuth();
+//   }
 
-  async finalizeLogin(): Promise<boolean> {
-  await this.oauthService.loadDiscoveryDocument();
-  await this.oauthService.tryLoginCodeFlow();
+//   async loginTest(): Promise<void> {
+//     await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+//   }
 
-  if (!this.accessToken) {
-    await new Promise(res => setTimeout(res, 500));
-    await this.oauthService.tryLoginCodeFlow();
-  }
+//   async finalizeLogin(): Promise<boolean> {
+//   await this.oauthService.loadDiscoveryDocument();
+//   await this.oauthService.tryLoginCodeFlow();
 
-  return !!this.accessToken;
-}
+//   if (!this.accessToken) {
+//     await new Promise(res => setTimeout(res, 500));
+//     await this.oauthService.tryLoginCodeFlow();
+//   }
+
+//   return !!this.accessToken;
+// }
 
 
-  logout() { this.oauthService.logOut({ postLogoutRedirectUri: window.location.origin }); }
+//   logout() { this.oauthService.logOut({ postLogoutRedirectUri: window.location.origin }); }
 
-  get accessToken() { return this.oauthService.getAccessToken(); }
-  get idToken() { return this.oauthService.getIdToken(); }
-  get identityClaims() { return this.oauthService.getIdentityClaims(); }
-  get isLoggedIn() { return this.oauthService.hasValidAccessToken(); }
+//   get accessToken() { return this.oauthService.getAccessToken(); }
+//   get idToken() { return this.oauthService.getIdToken(); }
+//   get identityClaims() { return this.oauthService.getIdentityClaims(); }
+//   get isLoggedIn() { return this.oauthService.hasValidAccessToken(); }
  
   //get loadDiscoveryDocumentAndTryLogin() { return this.oauthService.loadDiscoveryDocumentAndTryLogin() }
 }

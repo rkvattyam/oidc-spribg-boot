@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { OrgService, Org } from '../../services/organisation.service';
 import { Router } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { KeycloakService } from '../../services/keycloak.service';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +16,17 @@ export class HomeComponent implements OnInit {
   selectedOrg: string | null = null;
   claims: any;
  userInfo: any;
-  constructor(public auth: AuthService, private orgService: OrgService, private router: Router) { }
+ loggedIn: boolean = false;
+  constructor(public auth: AuthService, private orgService: OrgService,
+     private router: Router, public keycloakService: KeycloakService) { }
 
   ngOnInit() {
-    this.orgService.listOrgs().subscribe(list => this.orgs = list);
-    this.selectedOrg = this.orgService.getSelectedOrg();
-   if (this.auth.isLoggedIn) {
-      this.userInfo = this.auth.identityClaims;
-    }
+    this.loggedIn = this.keycloakService.isLoggedIn();
+    // this.orgService.listOrgs().subscribe(list => this.orgs = list);
+    // this.selectedOrg = this.orgService.getSelectedOrg();
+  //  if (this.auth.isLoggedIn) {
+  //     this.userInfo = this.auth.identityClaims;
+  //   }
   }
 
   select(o: Org) {
@@ -31,13 +35,13 @@ export class HomeComponent implements OnInit {
   }
 
   login() {
-    this.auth.login();
+   // this.auth.login();
+   this.keycloakService.login();
   }
 
   logout() {
-    this.auth.logout();
+   // this.auth.logout();
+   this.keycloakService.logout();
   }
-
- // goCredentials() { this.router.navigate(['/credentials']); }
 
 }

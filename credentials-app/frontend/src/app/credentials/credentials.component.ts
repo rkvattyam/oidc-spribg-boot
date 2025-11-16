@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
+import { KeycloakService } from '../../services/keycloak.service';
 @Component({
   selector: 'app-credentials',
   imports: [FormsModule, CommonModule],
@@ -28,7 +30,8 @@ export class CredentialsComponent implements OnInit {
   isLoading = true;
 
   constructor(private cs: CredentialService, private org: OrgService,
-    private authService: AuthService, private router: Router, private cd: ChangeDetectorRef,) {
+     private router: Router, private cd: ChangeDetectorRef,
+  private keyCloakService: KeycloakService) { //private authService: AuthService,
     const nav = this.router.getCurrentNavigation();
     this.organisation = nav?.extras?.state?.['organisation']
     this.userInfo = nav?.extras?.state?.['userInfo']
@@ -37,12 +40,11 @@ export class CredentialsComponent implements OnInit {
 
   async ngOnInit() {
     this.orgId = this.org.getSelectedOrg();
-    const userDetails = this.authService.identityClaims;
-    const orgId = this.userInfo.organizations[0].id;
+    const userDetails = this.keyCloakService.getIdentityClaims();
     try {
       if (this.isCredentialEmpty) {
-        const credential = await this.cs.getCredentialByOrg(
-          orgId, userDetails['sub']
+        const credential = await this.cs.getCredentialByUser(
+           userDetails['email']
         );
         if(credential.length === 0) {
            this.isCredentialsAvailable = false;
@@ -62,14 +64,12 @@ export class CredentialsComponent implements OnInit {
     }
   }
 
-  load() {
-    this.cs.list(this.orgId || undefined).subscribe(c => this.creds = c);
-  }
 
   async create() {
     const orgId = this.userInfo.organizations[0].id;
     const credential = await this.cs.create(orgId, this.userInfo?.userId, this.clientSecret) as any;
    alert(`Client secret created/updated successfully: ${credential?.clientId}`);
+   this.router.navigate(['/organization']);
   }
 
  edit(c: any) {
@@ -82,16 +82,34 @@ export class CredentialsComponent implements OnInit {
   cancel() {
     this.editId = null;
     this.updatedSecret = '';
+    this.cd.detectChanges();
   }
 
   async save(c: any) {
     const clientId = c.clientId;
     const updateSecretClientId = await this.cs.updateSecret(clientId, this.updatedSecret);
     alert(`Client secret created/updated successfully: ` + JSON.stringify(updateSecretClientId));
+    this.keyCloakService.logout();
+    //this.authService.logout();
   }
 
-  delete(c: Credential) {
-    this.cs.delete(this.orgId || '', c.id).subscribe(() => this.load());
+  async delete(c: any) {
+   const response =  await firstValueFrom (this.cs.delete(c.clientId));
+   //const userDetails = this.authService.identityClaims;
+    const userDetails = this.keyCloakService.getIdentityClaims();
+   if(response.status === 200){
+      const credential = await this.cs.getCredentialByUser(
+           userDetails['email']
+        );
+        if(credential.length === 0) {
+           this.isCredentialsAvailable = false;
+        } else {
+           this.isCredentialsAvailable = true;
+        }
+        this.isLoading = false;
+        this.credential = credential;
+        this.cd.detectChanges();
+   }
   }
 
   get isCredentialEmpty() {

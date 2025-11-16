@@ -1,0 +1,10 @@
+com\org\user\credentials\integration\ApiIT$2.class
+com\org\user\credentials\controller\CredentialsControllerTest.class
+com\org\user\credentials\integration\ApiIntegrationTest$2.class
+com\org\user\credentials\integration\ApiIT.class
+com\org\user\credentials\integration\ApiIntegrationTest.class
+com\org\user\credentials\integration\ApiIT$1.class
+com\org\user\credentials\CredentialsAppApplicationTests.class
+com\org\user\credentials\integration\ApiIntegrationTest$1.class
+com\org\user\credentials\controller\OrganizationControllerTest.class
+com\org\user\credentials\controller\UserControllerTest.class

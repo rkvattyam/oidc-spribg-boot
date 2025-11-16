@@ -2,6 +2,7 @@ package com.org.user.credentials.controller;
 
 import com.org.user.credentials.dto.UserOrganizationsResponse;
 import com.org.user.credentials.service.OrganizationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +18,8 @@ public class OrganizationController {
         this.organizationService = organizationService;
     }
     @GetMapping("/organizations/user/{email}")
-    public UserOrganizationsResponse getOrganizationsByUsername(@PathVariable String email) {
-        return organizationService.getOrganizationsByUsername(email);
+    public ResponseEntity<UserOrganizationsResponse> getOrganizationsByUsername(@PathVariable String email) {
+        return ResponseEntity.ok(organizationService.getOrganizationsByUsername(email));
     }
 
 }

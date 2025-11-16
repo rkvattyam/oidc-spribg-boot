@@ -34,7 +34,6 @@ This project is a full-stack Spring Boot application that:
 ```
 
 ---
-
 ## 📬 API Endpoints
 
 ### ➕ `POST /users`
@@ -142,9 +141,9 @@ Retrieve list of organisation of an user.
 }
 ```
 
-### ➕ `GET /credentials/21?email=john@example.com`
+### ➕ `GET /credentials/user/?email=john@example.com`
 
-Retrieve list of credentials  of an user in that organisation.
+Retrieve list of credentials  of an user in organisation.
 
 #### Request body:
 **Headers:**
@@ -180,10 +179,13 @@ Update the secret of the credential.
 
 #### Request body:
 **Headers:**
-- `Authorization`: Bearer token (required)
-- `Content-Type`: application/json (required)
+```json
+{
+  "newSecret": "super-secret-two"
+}
+```
 
-#### Response:
+### Response:
 ```json
 {
   "id": 8,
@@ -206,6 +208,7 @@ Update the secret of the credential.
 }
 ```
 
-## 📄 License
-
-MIT License
+### To verify integration tests
+```bash
+ mvn verify -Pintegration '-Dintegration.userName={userName from the realm file}'
+```

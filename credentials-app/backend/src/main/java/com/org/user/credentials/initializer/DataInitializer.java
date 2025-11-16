@@ -27,7 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
         if (organizationRepository.count() > 0) {
-            System.out.println("ℹ️ Organizations already exist — skipping preload.");
+            System.out.println("Organizations already exist — skipping preload.");
             return;
         }
 
@@ -42,8 +42,6 @@ public class DataInitializer implements CommandLineRunner {
         createUser("Alice", "Johnson", "alice@technova.com", Set.of(org1));
         createUser("Bob", "Müller", "bob@globalsoft.com", Set.of(org2));
         createUser("Charlie", "Smith", "charlie@innocore.com", Set.of(org3));
-
-        System.out.println("✅ Preloaded organizations and users with ManyToMany relation.");
     }
 
     // Helper method to create an organization

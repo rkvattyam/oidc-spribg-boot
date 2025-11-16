@@ -2,6 +2,8 @@ package com.org.user.credentials.service;
 
 import com.org.user.credentials.dto.CredentialResponseDto;
 import com.org.user.credentials.entity.Credentials;
+import com.org.user.credentials.entity.User;
+import com.org.user.credentials.exception.CredentialsAppException;
 import com.org.user.credentials.repository.CredentialsRepository;
 import com.org.user.credentials.repository.OrganizationRepository;
 import com.org.user.credentials.repository.UserRepository;
@@ -35,7 +37,7 @@ public class CredentialService {
      */
     public String updateClientSecret(String clientId, String newSecret) {
         var credentials = credentialsRepository.findByClientId(clientId)
-                .orElseThrow(() -> new RuntimeException("Credentials not found for clientId: " + clientId));
+                .orElseThrow(() -> new CredentialsAppException("Credentials not found for clientId: " + clientId));
         credentials.setClientSecret(newSecret);
         return credentialsRepository.save(credentials).getClientId();
     }
@@ -45,7 +47,7 @@ public class CredentialService {
      * @param clientId the client id of the credential
      */ public void deleteClientSecret(String clientId) {
         var credentials = credentialsRepository.findByClientId(clientId)
-                .orElseThrow(() -> new RuntimeException("Credentials not found for clientId: " + clientId));
+                .orElseThrow(() -> new CredentialsAppException("Credentials not found for clientId: " + clientId));
         credentialsRepository.delete(credentials);
     }
 
@@ -60,10 +62,10 @@ public class CredentialService {
     @Transactional
     public Credentials createCredentialsIfNoneExist(Long userId, Long organizationId, String clientSecret) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new CredentialsAppException("User not found"));
 
         var org = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new IllegalArgumentException("Organization not found"));
+                .orElseThrow(() -> new CredentialsAppException("Organization not found"));
 
         var cred = new Credentials();
         cred.setClientId(String.valueOf(UUID.randomUUID()));
@@ -84,6 +86,21 @@ public class CredentialService {
      */
     public List<CredentialResponseDto> getCredentialsForUserAndOrganization(String email, Long organizationId) {
         return credentialsRepository.findByOrganizationIdAndUserEmail(organizationId, email)
+                .stream()
+                .map(CredentialResponseDto::fromEntity)
+                .toList();
+    }
+
+    /**
+     * Method to retrieve the credentials response
+     * @param email email of the user
+     * @return list of credentials
+     */
+    public List<CredentialResponseDto> getCredentialsByUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CredentialsAppException("User not found for email: " + email));
+
+        return credentialsRepository.findByCreatedById(user.getId())
                 .stream()
                 .map(CredentialResponseDto::fromEntity)
                 .toList();

@@ -11,11 +11,6 @@ import java.util.List;
 @Repository
 public interface OrganizationRepository  extends JpaRepository<Organization, Long> {
 
-    // Example custom query methods if needed
-    Organization findByName(String name);
-    boolean existsByVat(String vat);
-    boolean existsBySapId(String sapId);
-    boolean existsByName(String name);
     @Query("""
     SELECT o FROM Organization o
     JOIN o.users u

@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: credentials-app
+  datasource:
+    #url: jdbc:postgresql://localhost:5432/userdb
+    url: jdbc:postgresql://host.docker.internal:5432/userdb
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          spring:
+            client-id: spring-client
+            client-secret: spring-secret
+            authorization-grant-type: password
+            scope: openid,profile,email
+            provider: keycloak
+
+        provider:
+          keycloak:
+            issuer-uri: http://host.docker.internal:8081/realms/myrealm #http://keycloak:8080/realms/myrealm
+            token-uri:  http://host.docker.internal:8081/realms/myrealm/protocol/openid-connect/token #http://keycloak:8080/realms/myrealm/protocol/openid-connect/token
+
+      resourceserver:
+        jwt:
+          issuer-uri: http://host.docker.internal:8081/realms/myrealm #http://keycloak:8080/realms/myrealm
+
+keycloak:
+  token-uri:  http://host.docker.internal:8081/realms/myrealm/protocol/openid-connect/token #http://keycloak:8080/realms/myrealm/protocol/openid-connect/token
+  client-id: spring-client
+  client-secret: spring-secret
+

@@ -17,5 +17,5 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9000 #http://mock-oidc:9000 #http://host.docker.internal:9000 #
-          jwk-set-uri: http://host.docker.internal:9000/jwks
+          issuer-uri: http://host.docker.internal:8081/realms/myrealm #http://keycloak:8080/realms/myrealm
+          jwk-set-uri: http://host.docker.internal:8081/realms/myrealm/protocol/openid-connect/certs

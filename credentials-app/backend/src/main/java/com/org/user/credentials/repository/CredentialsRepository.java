@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface CredentialsRepository extends JpaRepository<Credentials, Long> {
     Optional<Credentials> findByClientId(String clientId);
-    void deleteByClientId(String clientId);
     List<Credentials> findByCreatedById(Long userId);
     @Query("""
         SELECT c 
@@ -22,6 +21,7 @@ public interface CredentialsRepository extends JpaRepository<Credentials, Long> 
     """)
     List<Credentials> findByOrganizationIdAndUserEmail(@Param("organizationId") Long organizationId,
                                                        @Param("email") String email);
+
 }
 
 

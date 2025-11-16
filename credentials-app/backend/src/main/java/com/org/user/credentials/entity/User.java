@@ -3,14 +3,11 @@ package com.org.user.credentials.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
-@Data
 @Table(name = "users")
 public class User {
     @Id
@@ -37,8 +34,6 @@ public class User {
     private Set<Credentials> createdCredentials = new HashSet<>();
 
 
-
-    // Convenience method to add organization
     public void addOrganization(Organization org) {
         this.organizations.add(org);
         org.getUsers().add(this);

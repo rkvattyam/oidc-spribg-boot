@@ -1,33 +1,8 @@
-<!-- <div class="container">
-    <h1>Demo App</h1>
-
-    <div *ngIf="!auth.isLoggedIn">
-      <p>Please log in with OIDC.</p>
-      <button (click)="auth.login()">Login</button>
-    </div>
-
-    <div *ngIf="auth.isLoggedIn">
-      <p>Welcome <strong>{{claims?.name || claims?.sub}}</strong></p>
-      <button (click)="auth.logout()">Logout</button>
-
-      <h3>Select Organization</h3>
-      <ul>
-        <li *ngFor="let o of orgs">
-          <button (click)="select(o)">{{o.name}}</button>
-        </li>
-      </ul>
-
-      <div *ngIf="selectedOrg">
-        <p>Selected org: <strong>{{selectedOrg}}</strong></p>
-        <button (click)="goCredentials()">Manage Credentials</button>
-      </div>
-    </div>
-  </div> -->
 
   <div class="container" style="margin:2rem;">
   <h1>Demo OIDC App</h1>
 
-  <div *ngIf="!auth.isLoggedIn; else loggedIn">
+  <div *ngIf="!keycloakService.isLoggedIn(); else loggedIn">
     <p>You are not logged in.</p>
     <button (click)="login()">Login with OIDC</button>
   </div>

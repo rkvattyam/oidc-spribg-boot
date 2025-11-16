@@ -8,8 +8,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String DEFAULT_ERROR_MSG = "Something went Wrong, Please try again later";
 
     @ExceptionHandler(CredentialsAppException.class)
     public ResponseEntity<ApiError> handleBusinessException(
@@ -17,13 +21,13 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         ApiError error = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
 
-        return ResponseEntity.badRequest().body(error);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,16 +55,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(
-            Exception ex,
-            HttpServletRequest request) {
+            HttpServletRequest request, Exception ex) {
 
+        ex.printStackTrace();
         ApiError error = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage(),
+                DEFAULT_ERROR_MSG,
                 request.getRequestURI()
         );
 
         return ResponseEntity.internalServerError().body(error);
     }
+
+    @ExceptionHandler(OidcTokenException.class)
+    public ResponseEntity<Map<String, Object>> handleOidcTokenException(OidcTokenException ex) {
+        Map<String, Object> body = Map.of(
+                "message", ex.getMessage(),
+                "status", ex.getStatusCode()
+        );
+        return ResponseEntity.status(ex.getStatusCode()).body(body);
+    }
+
 }

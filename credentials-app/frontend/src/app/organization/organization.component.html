@@ -1,6 +1,6 @@
-<div class="container">
+f<div class="container">
     <div *ngIf="!userExists">
-        <h2>Select Organizations for {{ userInfo?.firstName }} {{ userInfo?.lastName }}</h2>
+        <h2>Select Organizations for {{ firstName }} {{ lastName }}</h2>
 
         <ul>
             <li *ngFor="let org of availableOrgs">
@@ -27,7 +27,7 @@
           type="radio"
           name="selectedOrg"
           [value]="org"
-          [checked]="selectedOrg?.orgId === org.orgId"
+          [checked]="selectedOrg?.id === org.id"
           (change)="selectOrg(org)"
         />
         {{ org.name }}

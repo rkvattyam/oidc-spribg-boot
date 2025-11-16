@@ -1,11 +1,13 @@
 services:
   frontend:
-    build: ./frontend                # Path to your Angular + Dockerfile
+    build: ./frontend
     container_name: frontend
     ports:
-      - "4200:80"                    # Angular served via Nginx
-    depends_on:
-      - backend
+      - "4200:80"
+    environment:
+      KEYCLOAK_URL: http://localhost:8081
+      KEYCLOAK_REALM: myrealm
+      KEYCLOAK_CLIENT_ID: angular-client
     networks:
       - demo-net
 
@@ -15,27 +17,35 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - oidc
+      - keycloak
       - db
-    expose:
-      - "8080"
-    networks:
-      - demo-net
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/userdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8081/realms/myrealm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://host.docker.internal:8081/realms/myrealm/protocol/openid-connect/certs
+    networks:
+      - demo-net
 
-  oidc:
-    build: ./mock-oidc
-    container_name: mock-oidc
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
+      - "--import-realm"
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     ports:
-      - "9000:9000"
+      - "8081:8080"
     networks:
       - demo-net
 
   db:
-    image: postgres
+    image: postgres:latest
     container_name: user-credentials-postgres
     environment:
       POSTGRES_DB: userdb

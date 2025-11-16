@@ -2,6 +2,7 @@ package com.org.user.credentials.controller;
 
 import com.org.user.credentials.dto.CreateCredentialRequest;
 import com.org.user.credentials.dto.CredentialResponseDto;
+import com.org.user.credentials.dto.UpdateCredentialRequest;
 import com.org.user.credentials.service.CredentialService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,24 +21,23 @@ public class CredentialsController {
     }
 
     @PutMapping("/credentials/{clientId}/secret")
-    public String updateClientSecret(@PathVariable String clientId, @RequestParam String newSecret) {
-        return credentialService.updateClientSecret(clientId, newSecret);
+    public ResponseEntity<String> updateClientSecret(@PathVariable String clientId, @RequestBody UpdateCredentialRequest request) {
+        return ResponseEntity.ok(credentialService.updateClientSecret(clientId, request.newSecret()));
     }
 
     @DeleteMapping("/credentials/{clientId}")
-    public String deleteClientSecret(@PathVariable String clientId) {
+    public void deleteClientSecret(@PathVariable String clientId) {
         credentialService.deleteClientSecret(clientId);
-        return "Deleted credentials for clientId: " + clientId;
     }
 
     @PostMapping("/credentials")
-    public CredentialResponseDto createCredential(@RequestBody CreateCredentialRequest request) {
+    public ResponseEntity<CredentialResponseDto> createCredential(@RequestBody CreateCredentialRequest request) {
         var credentials =  credentialService.createCredentialsIfNoneExist(
                 request.userId(),
                 request.organizationId(),
                 request.clientSecret()
         );
-        return CredentialResponseDto.fromEntity(credentials);
+        return ResponseEntity.ok(CredentialResponseDto.fromEntity(credentials));
     }
 
     @GetMapping("/credentials/{organizationId}")
@@ -47,6 +47,13 @@ public class CredentialsController {
     ) {
         List<CredentialResponseDto> credentials =
                 credentialService.getCredentialsForUserAndOrganization(email, organizationId);
+
+        return ResponseEntity.ok(credentials);
+    }
+
+    @GetMapping("/credentials/user")
+    public ResponseEntity<List<CredentialResponseDto>> getCredentialsByUser(@RequestParam String email) {
+        List<CredentialResponseDto> credentials = credentialService.getCredentialsByUser(email);
 
         return ResponseEntity.ok(credentials);
     }
